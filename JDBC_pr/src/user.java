@@ -16,10 +16,11 @@ public class user {
 		this.status = status;
 	}
 
-	public user( String username, String email){
+	// Simple user constructor
+	public user( String username, String email,String status){
 		this.username = username;
 		this.email = email;
-
+		this.status = status;
 	}
 	
 	// 
@@ -42,5 +43,7 @@ public class user {
 		return this.status;
 	
 	}
+	
+	
 	
 }

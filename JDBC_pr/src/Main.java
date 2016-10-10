@@ -4,7 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -14,7 +15,7 @@ import javax.swing.border.TitledBorder;
 
 
 
-public class Builder {
+public class Main {
 
 	private JFrame frame;
 	
@@ -28,7 +29,7 @@ public class Builder {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Builder window = new Builder();
+					Main window = new Main();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -42,9 +43,9 @@ public class Builder {
 	/**
 	 * Create the application.
 	 */
-	public Builder() {
+	public Main() {
 		initialize();	
-		conn = Connect.connection();
+		conn = SQL_Handler.connection();
 	}
 
 	/**
@@ -77,55 +78,39 @@ public class Builder {
 				button.setBounds(0, 0, 100, 25);
 				OwnerStatus.add(button);
 				
-				JButton btnShowOwners = new JButton("Show Owners");
-				btnShowOwners.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						try{
-							PreparedStatement ShowOwner = conn.prepareStatement("SELECT username, email, status FROM USERS");
-							ResultSet show = ShowOwner.executeQuery();						
-							
-							
-						}catch(Exception ex){
-							
-						}
-						
-					}
-				});
-				btnShowOwners.setBounds(292, 0, 119, 25);
-				OwnerStatus.add(btnShowOwners);
-				
 				JScrollPane scrollPane = new JScrollPane();
 				scrollPane.setBounds(40, 94, 658, 285);
 				OwnerStatus.add(scrollPane);
+				System.out.println("innan userobject");
+				user userObject = new user(QueryHandler.getAdmin().getString(1), QueryHandler.getAdmin().getString(2), QueryHandler.getAdmin().getString(3));
+				//user userObject2 = new user(QueryHandler.selectMany().get(1).get(0).toString(),QueryHandler.selectMany().get(1).get(1).toString(),QueryHandler.selectMany().get(1).get(2).toString());
 				
-				user userObject = new user(ResStatement.result().getString(1),ResStatement.result().getString(1));
-				
-
-				
-				//stressad apa
-				String[] columnNames = {"Username",
-                        "Email",
-                        "Status"};
-				
-				
-				Object[][] data ={};
-				Vector bajs;
-				
+				System.out.println(userObject.getEmail());
+				System.out.println(userObject.getStatus());
+				System.out.println(userObject.getUserName());
+				// Epic shit
+				List<user> userList = new ArrayList<user>();
+				for(int i =0; i < QueryHandler.getOwners().size(); i++){
+					userList.add(new user(QueryHandler.getOwners().get(i).get(0).toString(),QueryHandler.getOwners().get(i).get(1).toString(),QueryHandler.getOwners().get(i).get(2).toString()));
+				}
 				
 				
-				table = new JTable();
-				TableColumn aColumn = null;
+			
 				
-				table.addColumn(aColumn);
-				table.add
+				
+				//List<user> userList = new ArrayList<user>();
+				//userList.add(userObject);
+				//userList.add(userObject2);
+				
+				// Superior stuff
+				userTableClass tableModel = new userTableClass(userList);
+				
+				System.out.println(tableModel.getUserAt(0).getUserName());
+				JTable table = new JTable(tableModel);
+				
+			
+				
 				scrollPane.setViewportView(table);
-				
-				
-				
-				
-				
-				
-				
 				
 				
 				
@@ -160,7 +145,7 @@ public class Builder {
 				
 				
 				
-				JLabel lblNewLabel_1 = new JLabel("Email:  " + ResStatement.result().getString(1));
+				JLabel lblNewLabel_1 = new JLabel("Email:  " + userObject.getEmail());
 				lblNewLabel_1.setBounds(12, 150, 233, 16);
 				AdminPage.add(lblNewLabel_1);
 				
